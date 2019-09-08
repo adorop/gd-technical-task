@@ -16,8 +16,17 @@
     <profiles>
         <profile>
             <id>local</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
             <properties>
                 <spark.scope>compile</spark.scope>
+            </properties>
+        </profile>
+        <profile>
+            <id>statistics</id>
+            <properties>
+                <main.class>aliaksei.darapiyevich.statistics.StatisticsApp</main.class>
             </properties>
         </profile>
     </profiles>

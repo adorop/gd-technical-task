@@ -1,7 +1,6 @@
-package aliaksei.darapiyevich.impression.enrichment
+package aliaksei.darapiyevich
 
-import aliaksei.darapiyevich.{Load, OutputDefinition}
-import org.apache.spark.sql.{DataFrame, Dataset, Row}
+import org.apache.spark.sql.{DataFrame, Row}
 
 class DataFrameLoader(
                        output: DataFrame
@@ -11,5 +10,11 @@ class DataFrameLoader(
     output.write
       .format(outputDefinition.format)
       .save(outputDefinition.location)
+  }
+}
+
+object DataFrameLoader {
+  val factory: DataFrame => DataFrameLoader = {
+    new DataFrameLoader(_)
   }
 }

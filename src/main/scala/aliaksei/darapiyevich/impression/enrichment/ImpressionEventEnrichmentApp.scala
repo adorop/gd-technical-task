@@ -1,9 +1,9 @@
 package aliaksei.darapiyevich.impression.enrichment
 
-import aliaksei.darapiyevich.{EtlJob, JobDefinition}
 import aliaksei.darapiyevich.model.ImpressionEvent
 import aliaksei.darapiyevich.utils.SparkUtils
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import aliaksei.darapiyevich.{DataFrameLoader, EtlJob, JobDefinition}
+import org.apache.spark.sql.SparkSession
 
 object ImpressionEventEnrichmentApp extends App {
   val argsParser = new ImpressionEventAppArgsParser(args)
@@ -16,6 +16,6 @@ object ImpressionEventEnrichmentApp extends App {
   new EtlJob(
     new ImpressionEventExtractor(spark),
     new EnrichEventWithSessionInfoTransformation(argsParser.sessionExpirationThresholdSeconds),
-    (dataFrame: DataFrame) => new DataFrameLoader(dataFrame)
+    DataFrameLoader.factory
   ).run(jobDefinition)
 }
