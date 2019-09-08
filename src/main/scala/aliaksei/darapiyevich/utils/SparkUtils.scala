@@ -50,4 +50,13 @@ object SparkUtils {
       .divide(new BigDecimal("2"), DecimalScale, DecimalRoundMode)
       .doubleValue()
   }
+
+  def timeDiffSeconds(followingTimestamp: Column, precedingTimestamp: Column): Column = {
+    unix_timestamp(followingTimestamp) - unix_timestamp(precedingTimestamp)
+  }
+
+  def patchNull(column: String, default: Any): Column = {
+    when(not(isnull(col(column))), col(column))
+      .otherwise(default) as column
+  }
 }

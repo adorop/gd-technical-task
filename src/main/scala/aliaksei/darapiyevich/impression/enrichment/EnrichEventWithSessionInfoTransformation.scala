@@ -2,6 +2,7 @@ package aliaksei.darapiyevich.impression.enrichment
 
 import aliaksei.darapiyevich.Transform
 import aliaksei.darapiyevich.model.{ImpressionEvent, Session}
+import aliaksei.darapiyevich.utils.SparkUtils.timeDiffSeconds
 import org.apache.spark.sql.expressions.Window
 import org.apache.spark.sql.functions._
 import org.apache.spark.sql.types.IntegerType
@@ -46,7 +47,7 @@ object EnrichEventWithSessionInfoTransformation {
     val expression: Column = {
       val current = col(EventTime)
       val previous = lag(EventTime, 1) over userIdAndCategoryWindow
-      unix_timestamp(current) - unix_timestamp(previous)
+      timeDiffSeconds(current, previous)
     }
   }
 

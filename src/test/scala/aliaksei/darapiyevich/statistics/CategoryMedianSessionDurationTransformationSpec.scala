@@ -3,8 +3,8 @@ package aliaksei.darapiyevich.statistics
 import aliaksei.darapiyevich.SparkTransformationsSpec
 import aliaksei.darapiyevich.model.{ImpressionEvent, Session}
 import org.apache.spark.sql.Column
-import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
 import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.types.{DoubleType, StringType, StructField, StructType}
 
 class CategoryMedianSessionDurationTransformationSpec extends SparkTransformationsSpec {
   override def inputSchema: StructType = {
@@ -13,13 +13,14 @@ class CategoryMedianSessionDurationTransformationSpec extends SparkTransformatio
     ImpressionEvent.schema + Session.schema
   }
 
+  import CategoryMedianSessionDurationTransformation._
   import ImpressionEvent.columns._
 
   override def expectedSchema: StructType = {
     StructType(
       Seq(
         StructField(Category, StringType),
-        StructField("median_session_duration", DoubleType)
+        StructField(MedianSessionDurationFieldName, DoubleType)
       )
     )
   }

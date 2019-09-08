@@ -1,8 +1,9 @@
 package aliaksei.darapiyevich.statistics
 
 import aliaksei.darapiyevich.Transform
-import aliaksei.darapiyevich.utils.SparkUtils.medianUDF
+import aliaksei.darapiyevich.utils.SparkUtils._
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.types.DoubleType
 import org.apache.spark.sql.{Column, Dataset, Row}
 
 class CategoryMedianSessionDurationTransformation(
@@ -34,10 +35,10 @@ object CategoryMedianSessionDurationTransformation {
 
   private val SessionDuration = new {
     val FieldName = "session_duration"
-    val expression: Column = unix_timestamp(col(SessionEndTime)) - unix_timestamp(col(SessionStartTime))
+    val expression: Column = timeDiffSeconds(col(SessionEndTime), col(SessionStartTime))
   }
 
   private val approximateMedianSessionDurationExpression: Column = {
-    expr(s"percentile_approx(${SessionDuration.FieldName}, 0.5)")
+    expr(s"percentile_approx(${SessionDuration.FieldName}, 0.5)") cast DoubleType
   }
 }
