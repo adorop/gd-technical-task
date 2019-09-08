@@ -1,0 +1,7 @@
+category,product,userId,eventTime,eventType,sessionId,sessionStartTime,sessionEndTime
+mobile phones,iPhone 8 Plus,user 100,2018-03-01 12:06:49,view description,mobilephones_user100_1,2018-03-01 12:06:49,2018-03-01 12:08:01
+mobile phones,iPhone 8 Plus,user 100,2018-03-01 12:07:14,add to bucket,mobilephones_user100_1,2018-03-01 12:06:49,2018-03-01 12:08:01
+mobile phones,iPhone 8,user 100,2018-03-01 12:08:01,view description,mobilephones_user100_1,2018-03-01 12:06:49,2018-03-01 12:08:01
+mobile phones,iPhone 8,user 100,2018-03-01 12:13:10,dislike,mobilephones_user100_2,2018-03-01 12:13:10,2018-03-01 12:13:10
+notebooks,MacBook Air,user 300,2018-03-01 12:14:58,view description,notebooks_user300_1,2018-03-01 12:14:58,2018-03-01 12:14:58
+notebooks,MacBook Air,user 300,2018-03-01 12:20:10,dislike,notebooks_user300_2,2018-03-01 12:20:10,2018-03-01 12:20:10
