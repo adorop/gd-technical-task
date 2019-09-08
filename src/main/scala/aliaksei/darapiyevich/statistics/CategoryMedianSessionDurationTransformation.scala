@@ -1,19 +1,28 @@
 package aliaksei.darapiyevich.statistics
 
 import aliaksei.darapiyevich.Transform
-import org.apache.spark.sql.{Column, Dataset, Row}
+import aliaksei.darapiyevich.utils.SparkUtils.medianUDF
 import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{Column, Dataset, Row}
 
-class CategoryMedianSessionDurationTransformation extends Transform[Row, Row] {
+class CategoryMedianSessionDurationTransformation(
+                                                   canTolerateApproximation: Boolean = true
+                                                 ) extends Transform[Row, Row] {
   override def apply(input: Dataset[Row]): Dataset[Row] = {
-    import aliaksei.darapiyevich.model.ImpressionEvent.columns._
     import CategoryMedianSessionDurationTransformation._
+    import aliaksei.darapiyevich.model.ImpressionEvent.columns._
 
-    input
+    val grouped = input
       .withColumn(SessionDuration.FieldName, SessionDuration.expression)
       .groupBy(Category)
-      .agg(medianSessionDurationExpression as MedianSessionDurationFieldName)
-
+    if (canTolerateApproximation) {
+      grouped
+        .agg(approximateMedianSessionDurationExpression as MedianSessionDurationFieldName)
+    } else {
+      grouped
+        .agg(collect_list(col(SessionDuration.FieldName)) as "session_durations")
+        .select(col(Category), medianUDF(col("session_durations")) as MedianSessionDurationFieldName)
+    }
   }
 }
 
@@ -28,7 +37,7 @@ object CategoryMedianSessionDurationTransformation {
     val expression: Column = unix_timestamp(col(SessionEndTime)) - unix_timestamp(col(SessionStartTime))
   }
 
-  private val medianSessionDurationExpression: Column = {
+  private val approximateMedianSessionDurationExpression: Column = {
     expr(s"percentile_approx(${SessionDuration.FieldName}, 0.5)")
   }
 }

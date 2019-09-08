@@ -17,13 +17,21 @@ class CategoryMedianSessionDurationTransformationSpec extends SparkTransformatio
     StructType(
       Seq(
         StructField(Category, StringType),
-        StructField("median_session_duraion", DoubleType)
+        StructField("median_session_duration", DoubleType)
       )
     )
   }
 
   test("calculates median session duration for each category") {
     val transform = new CategoryMedianSessionDurationTransformation
+    val result = transform(input)
+      .orderBy(Category)
+      .collect()
+    result should equal(expected.orderBy(Category).collect())
+  }
+
+  test("calculate median session duration for each category without approximation") {
+    val transform = new CategoryMedianSessionDurationTransformation(canTolerateApproximation = false)
     val result = transform(input)
       .orderBy(Category)
       .collect()
