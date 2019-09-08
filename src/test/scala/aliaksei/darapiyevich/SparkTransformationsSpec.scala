@@ -1,7 +1,7 @@
 package aliaksei.darapiyevich
 
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.{Column, DataFrame, Row, SparkSession}
 import org.scalatest.{FunSuite, Matchers}
 
 trait SparkTransformationsSpec extends FunSuite with Matchers {
@@ -37,4 +37,13 @@ trait SparkTransformationsSpec extends FunSuite with Matchers {
   }
 
   def expectedCsvResource: String = s"/expected/${getClass.getSimpleName}.csv"
+
+  def test(transformation: Transform[Row, Row]): Unit = {
+    val transformed = transformation(input)
+    val result = transformed.orderBy(sortColumn)
+      .collect()
+    result should equal(expected.orderBy(sortColumn).collect())
+  }
+
+  def sortColumn: Column
 }

@@ -2,12 +2,12 @@ package aliaksei.darapiyevich.impression.enrichment
 
 import aliaksei.darapiyevich.SparkTransformationsSpec
 import aliaksei.darapiyevich.model.{ImpressionEvent, Session}
+import org.apache.spark.sql.Column
 import org.apache.spark.sql.types.StructType
+import org.apache.spark.sql.functions.col
 
 class EnrichEventWithSessionInfoTransformationSpec extends SparkTransformationsSpec {
   private val FiveMinutes = 5 * 60
-
-  private val transform = new EnrichEventWithSessionInfoTransformation(sessionInactivityThresholdSeconds = FiveMinutes)
 
   override def inputSchema: StructType = ImpressionEvent.schema
 
@@ -16,12 +16,10 @@ class EnrichEventWithSessionInfoTransformationSpec extends SparkTransformationsS
     ImpressionEvent.schema + Session.schema
   }
 
+  override def sortColumn: Column = col(ImpressionEvent.columns.EventTime)
+
   test("enriches impression event with session info") {
-    val sortColumn = ImpressionEvent.columns.EventTime
-    val result = transform(input)
-      .orderBy(sortColumn)
-      .collect()
-    result should equal (expected.orderBy(sortColumn).collect())
+    test(new EnrichEventWithSessionInfoTransformation(sessionInactivityThresholdSeconds = FiveMinutes))
   }
 
 }
