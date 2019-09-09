@@ -16,9 +16,6 @@
     <profiles>
         <profile>
             <id>local</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
             <properties>
                 <spark.scope>compile</spark.scope>
             </properties>
